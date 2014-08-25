@@ -4,5 +4,12 @@
     <string name="app_name">Punto y Coma 2014</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="hello_user">Hola %1$s!</string>
+    <string name="success">Echo</string>
+    <string name="successfully_posted_post">Se ha logrado postear \'%1$s\'.\nPost ID: %2$s</string>
+    <string name="error">Error</string>
+    <string name="status_update">Actualizando estado %1$s en %2$s</string>
+    <string name="app_id">298741406971195</string>
+    <string name="get_started">Para iniciar, log en Facebook</string>
 
 </resources>
