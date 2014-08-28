@@ -1,0 +1,61 @@
+<RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin">
+
+    <Spinner
+        android:id="@+id/carrera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Spinner
+        android:id="@+id/escuela"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/carrera"
+        android:layout_marginTop="15dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+
+
+    <EditText
+        android:id="@+id/otraescuela"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Agrega tu Escuela"
+        android:ems="10"
+        android:layout_above="@+id/otracarrera"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="15dp"/>
+
+
+
+    <EditText
+        android:id="@+id/otracarrera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Agrega tu Carrera"
+        android:ems="10"
+        android:layout_above="@+id/button1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="15dp">
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registrar"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp" />
+    </RelativeLayout>

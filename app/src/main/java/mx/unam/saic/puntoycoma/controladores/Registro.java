@@ -3,8 +3,8 @@ package mx.unam.saic.puntoycoma.controladores;
 import mx.unam.saic.puntoycoma.R;
 
 
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,14 +15,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class Registro extends FragmentActivity{
+public class Registro extends ActionBarActivity{
 	Button registrar;
 	Spinner escuela;
 	Spinner carrera;
 	EditText otraEscuela;
 	EditText otraCarrera;
-	TextView texview1;
-    TextView textview2;
+
 	
 	
 	boolean flag1=false;//en caso de otra escuela
@@ -35,8 +34,7 @@ public class Registro extends FragmentActivity{
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        setContentView(R.layout.registro);
+        setContentView(R.layout.activity_registro);
         
         registrar=(Button) findViewById(R.id.button1);
         agregarEventoBoton();
@@ -50,27 +48,32 @@ public class Registro extends FragmentActivity{
         otraCarrera=(EditText) findViewById(R.id.otracarrera);
         otraEscuela.setVisibility(View.INVISIBLE);
         otraCarrera.setVisibility(View.INVISIBLE);
-        
-        texview1=(TextView)findViewById(R.id.textView1);
-        textview2=(TextView)findViewById(R.id.textView2);
-        texview1.setVisibility(View.INVISIBLE);
-        textview2.setVisibility(View.INVISIBLE);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         
 	}
-	
-	
-	private void agregarEventoBoton(){
+
+
+    private void agregarEventoBoton(){
 		registrar.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View arg0)
 			{
 				Toast.makeText(Registro.this, "boton1", Toast.LENGTH_SHORT).show();
+
+
+                if(fla)
+                enviarRegistro(carrera.getSelectedItemPosition(), escuela.getSelectedItemPosition());
 			}
 		});
 	}
-	
-	private void adaptarSpinner1(){
+
+    private void enviarRegistro(int selectedItemPosition, int selectedItemPosition1) {
+
+    }
+
+    private void adaptarSpinner1(){
 		
-		String [] listaEscuelas={"UNAM","IPN","UAM","Otra"};
+		String [] listaEscuelas={"Escuela...","UNAM","IPN","UAM","Otra"};
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, listaEscuelas);
 		escuela.setAdapter(adapter);
 		
@@ -79,11 +82,14 @@ public class Registro extends FragmentActivity{
 		        public void onItemSelected(AdapterView<?> parent,
 		            android.view.View v, int position, long id) {
 		                
-		        	if(position==3){
+		        	if(position==3&& position >0){
 		        		flag1=true;
 		        		otraEscuela.setVisibility(View.VISIBLE);
-		        		texview1.setVisibility(View.VISIBLE);
-		        	}
+		        	}else{
+                        flag1=false;
+                        otraEscuela.setVisibility(View.INVISIBLE);
+                    }
+
 		        }
 		 
 		        public void onNothingSelected(AdapterView<?> parent) {
@@ -96,19 +102,20 @@ public class Registro extends FragmentActivity{
 	
 private void adaptarSpinner2(){
 		
-		String [] listaCarreras={"Ingeniería en computación","Ciencias de la computación","Informatica","Otra"};
+		String [] listaCarreras={"Carrera...","IngenierÃ­a en computaciÃ³n","Ciencias de la computaciÃ³n","Informatica","Otra"};
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, listaCarreras);
 		carrera.setAdapter(adapter);
-		
 		carrera.setOnItemSelectedListener(
 		        new AdapterView.OnItemSelectedListener() {
 		        public void onItemSelected(AdapterView<?> parent,
 		            android.view.View v, int position, long id) {
-		        	if(position==3){
+		        	if(position==3 && position >0){
 		        		flag3=true;
 		        		otraCarrera.setVisibility(View.VISIBLE);
-		        		textview2.setVisibility(View.VISIBLE);
-		        	}
+		        	}else{
+                        flag3=false;
+                        otraCarrera.setVisibility(View.INVISIBLE);
+                    }
 		        }
 		 
 		        public void onNothingSelected(AdapterView<?> parent) {
