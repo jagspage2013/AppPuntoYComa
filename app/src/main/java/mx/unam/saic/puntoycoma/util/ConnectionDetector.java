@@ -1,4 +1,4 @@
-package mx.yobibytelabs.rescatapp.util;
+package mx.unam.saic.puntoycoma.util;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
