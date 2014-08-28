@@ -66,8 +66,22 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             int requestCode = 10;
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status,
                     this, requestCode);
+<<<<<<< HEAD
             dialog.show();
         }
+=======
+           // dialog.show();
+        }	
+		
+		//agregando registro
+		registro = (Button) findViewById(R.id.lanzar);
+        registro.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+            	Intent i = new Intent(MainActivity.this, Registro.class);
+                startActivity(i);
+            }
+        });
+>>>>>>> FETCH_HEAD
 
 
     }
