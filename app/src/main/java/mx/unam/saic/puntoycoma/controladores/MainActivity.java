@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -32,7 +33,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private ProgressDialog mConnectionProgressDialog;
     private PlusClient mPlusClient;
     private ConnectionResult mConnectionResult;
-
+    private Button registro;
     private UiLifecycleHelper uiHelper;
 
     private Session.StatusCallback callback = new Session.StatusCallback() {
@@ -66,22 +67,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             int requestCode = 10;
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status,
                     this, requestCode);
-<<<<<<< HEAD
             dialog.show();
         }
-=======
-           // dialog.show();
-        }	
 		
 		//agregando registro
-		registro = (Button) findViewById(R.id.lanzar);
+		registro = (Button) findViewById(R.id.ir_registrar);
         registro.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
             	Intent i = new Intent(MainActivity.this, Registro.class);
                 startActivity(i);
             }
         });
->>>>>>> FETCH_HEAD
 
 
     }
