@@ -59,7 +59,16 @@ public class MainActivity extends ActionBarActivity implements ConnectionCallbac
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status,
                     this, requestCode);
            // dialog.show();
-        }
+        }	
+		
+		//agregando registro
+		registro = (Button) findViewById(R.id.lanzar);
+        registro.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+            	Intent i = new Intent(MainActivity.this, Registro.class);
+                startActivity(i);
+            }
+        });
 
 
     }

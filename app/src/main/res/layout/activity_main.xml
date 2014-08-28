@@ -41,5 +41,10 @@
         android:layout_marginBottom="98dp"
         facebook:confirm_logout="false"
         facebook:fetch_user_info="true" />
+	<Button
+        android:id="@+id/lanzar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registrar" />
 
 </RelativeLayout>
