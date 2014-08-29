@@ -25,6 +25,7 @@ import com.google.android.gms.plus.PlusClient;
 
 import mx.unam.saic.puntoycoma.R;
 import mx.unam.saic.puntoycoma.util.ConnectionDetector;
+import mx.unam.saic.puntoycoma.util.Constants;
 
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener,ConnectionCallbacks, OnConnectionFailedListener{
@@ -33,7 +34,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private ProgressDialog mConnectionProgressDialog;
     private PlusClient mPlusClient;
     private ConnectionResult mConnectionResult;
-    private Button registro;
     private UiLifecycleHelper uiHelper;
 
     private Session.StatusCallback callback = new Session.StatusCallback() {
@@ -58,7 +58,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         mConnectionProgressDialog = new ProgressDialog(this);
         mConnectionProgressDialog.setMessage("Iniciando Sesión");
 
-        if(!(new ConnectionDetector(this).isConnectedToInternet())){
+        if(!(ConnectionDetector.isConnectedToInternet(this))){
             Log.d("SAIC","No está Conectado a internet... haz algo duh");
         }
 
@@ -71,8 +71,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
 		
 		//agregando registro
-		registro = (Button) findViewById(R.id.ir_registrar);
-        registro.setOnClickListener(new View.OnClickListener() {
+		((Button) findViewById(R.id.ir_registrar)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
             	Intent i = new Intent(MainActivity.this, Registro.class);
                 startActivity(i);
@@ -136,6 +135,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             makeARequest(session);
         } else if (state.isClosed()) {
             Log.i("SAIC", "Logged out...");
+            Constants.setName(this,"");
         }
     }
 
@@ -147,6 +147,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 if(session == Session.getActiveSession()){
                     if(user!= null){
                         Log.d("SAIC","EL USUARIO ES : "+ user.getFirstName() + user.getMiddleName() +user.getLastName());
+                        Constants.setName(getApplicationContext(),user.getFirstName()+" " + user.getMiddleName()+" "  +user.getLastName());
                     }
                 }
                 if (response.getError() != null) {

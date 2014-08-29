@@ -37,4 +37,7 @@ public class RegistroAlumno extends ParseObject {
     public String getCarrera(){
         return getString("carrera");
     }
+
+    public void setNombre(String nombre){put("nombre",nombre);}
+    public String getNombre(){return getString("nombre");}
 }

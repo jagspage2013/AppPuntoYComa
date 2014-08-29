@@ -1,128 +1,171 @@
 package mx.unam.saic.puntoycoma.controladores;
 
-import mx.unam.saic.puntoycoma.R;
-
-
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.ParseException;
+import com.parse.SaveCallback;
 
-public class Registro extends ActionBarActivity{
-	Button registrar;
-	Spinner escuela;
-	Spinner carrera;
-	EditText otraEscuela;
-	EditText otraCarrera;
+import mx.unam.saic.puntoycoma.R;
+import mx.unam.saic.puntoycoma.objetos.RegistroAlumno;
+import mx.unam.saic.puntoycoma.util.Constants;
 
-	
-	
-	boolean flag1=false;//en caso de otra escuela
-	boolean flag2=false;//en caso de que no este selecionada ninguna escuela
-	boolean flag3=false;//en caso de otra carrera
-	boolean flag4=false;//en caso que no este seleccionada ninguna carrera
-	
-	
-	
-	@Override
+
+public class Registro extends ActionBarActivity {
+
+    private Button registrar;
+    private Spinner escuela;
+    private Spinner carrera;
+    private EditText otraEscuela;
+    private EditText otraCarrera;
+    private int op1, op2;
+    public String[] escuelas;
+    public String[] carreras;
+    private String _escuela;
+    private String _carrera;
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
-        
-        registrar=(Button) findViewById(R.id.button1);
-        agregarEventoBoton();
-        
-        escuela=(Spinner) findViewById(R.id.escuela);
-        carrera=(Spinner) findViewById(R.id.carrera);
-        adaptarSpinner1();
-        adaptarSpinner2();
-        
-        otraEscuela=(EditText) findViewById(R.id.otraescuela);
-        otraCarrera=(EditText) findViewById(R.id.otracarrera);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        registrar = (Button) findViewById(R.id.button1);
+        escuela = (Spinner) findViewById(R.id.escuela);
+        carrera = (Spinner) findViewById(R.id.carrera);
+        otraEscuela = (EditText) findViewById(R.id.otraescuela);
+        otraCarrera = (EditText) findViewById(R.id.otracarrera);
+
+        carreras = getResources().getStringArray(R.array.opc_carrera);
+        escuelas = getResources().getStringArray(R.array.opc_escuela);
+
         otraEscuela.setVisibility(View.INVISIBLE);
         otraCarrera.setVisibility(View.INVISIBLE);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        
-	}
-
-
-    private void agregarEventoBoton(){
-		registrar.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View arg0)
-			{
-				Toast.makeText(Registro.this, "boton1", Toast.LENGTH_SHORT).show();
-
-
-                if(fla)
-                enviarRegistro(carrera.getSelectedItemPosition(), escuela.getSelectedItemPosition());
-			}
-		});
-	}
-
-    private void enviarRegistro(int selectedItemPosition, int selectedItemPosition1) {
+        adaptarSpinner1();
+        adaptarSpinner2();
+        agregarEventoBoton();
 
     }
 
-    private void adaptarSpinner1(){
-		
-		String [] listaEscuelas={"Escuela...","UNAM","IPN","UAM","Otra"};
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, listaEscuelas);
-		escuela.setAdapter(adapter);
-		
-		escuela.setOnItemSelectedListener(
-		        new AdapterView.OnItemSelectedListener() {
-		        public void onItemSelected(AdapterView<?> parent,
-		            android.view.View v, int position, long id) {
-		                
-		        	if(position==3&& position >0){
-		        		flag1=true;
-		        		otraEscuela.setVisibility(View.VISIBLE);
-		        	}else{
-                        flag1=false;
+
+    private void agregarEventoBoton() {
+        registrar.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View arg0) {
+
+                if (op1 !=escuelas.length-1  && op2 != carreras.length-1) {
+                    if (otraEscuela.getVisibility() == View.VISIBLE)
+                        _escuela = otraEscuela.getText().toString();
+                    else
+                        _escuela = escuelas[op1];
+
+                    if (otraCarrera.getVisibility() == View.VISIBLE)
+                        _carrera = otraCarrera.getText().toString();
+                    else
+                        _carrera = carreras[op2];
+
+                    if (!_escuela.isEmpty() && !_carrera.isEmpty()) {
+                        enviarRegistro(_escuela, _carrera);
+                        Log.d("SAIC","OP:"+escuelas.length+carreras.length);
+                    } else {
+                        Toast.makeText(getBaseContext(), "Completa el registro", Toast.LENGTH_SHORT).show();
+                    }
+
+                }else {
+                    Toast.makeText(getBaseContext(), "Completa el registro", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+    }
+
+    private void enviarRegistro(String escuela, String carrera) {
+        RegistroAlumno reg = new RegistroAlumno();
+        reg.setNombre(Constants.getName(this));
+        reg.setEscuela(escuela);
+        reg.setCarrera(carrera);
+        reg.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Toast.makeText(getBaseContext(), "Registro Exitoso", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), "Error al Registrar", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+    }
+
+    private void adaptarSpinner1() {
+
+        HintAdapter adapter = new HintAdapter(this, escuelas, android.R.layout.simple_spinner_item);
+        final int count = adapter.getCount() - 1;
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        escuela.setAdapter(adapter);
+        escuela.setSelection(adapter.getCount());
+        escuela.setOnItemSelectedListener(
+            new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> parent,
+                                           android.view.View v, int position, long id) {
+                    op1 = position;
+                    if (position == count) {
+                        otraEscuela.setVisibility(View.VISIBLE);
+                    } else {
                         otraEscuela.setVisibility(View.INVISIBLE);
                     }
 
-		        }
-		 
-		        public void onNothingSelected(AdapterView<?> parent) {
-		            flag2=true;
-		        }
-		});
-		
-		
-	}
-	
-private void adaptarSpinner2(){
-		
-		String [] listaCarreras={"Carrera...","Ingeniería en computación","Ciencias de la computación","Informatica","Otra"};
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, listaCarreras);
-		carrera.setAdapter(adapter);
-		carrera.setOnItemSelectedListener(
-		        new AdapterView.OnItemSelectedListener() {
-		        public void onItemSelected(AdapterView<?> parent,
-		            android.view.View v, int position, long id) {
-		        	if(position==3 && position >0){
-		        		flag3=true;
-		        		otraCarrera.setVisibility(View.VISIBLE);
-		        	}else{
-                        flag3=false;
+                }
+
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+        });
+    }
+
+    private void adaptarSpinner2() {
+
+        HintAdapter adapter = new HintAdapter(this, carreras, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        final int count = adapter.getCount() - 1;
+        carrera.setAdapter(adapter);
+        carrera.setSelection(adapter.getCount());
+        carrera.setOnItemSelectedListener(
+            new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> parent,
+                                           android.view.View v, int position, long id) {
+                    op2 = position;
+                    if (position == count) {
+                        otraCarrera.setVisibility(View.VISIBLE);
+                    } else {
                         otraCarrera.setVisibility(View.INVISIBLE);
                     }
-		        }
-		 
-		        public void onNothingSelected(AdapterView<?> parent) {
-		            flag4=true;
-		        }
-		});
-		
-	}
+                }
 
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+        });
+
+    }
+
+    class HintAdapter extends ArrayAdapter<String> {
+
+        public HintAdapter(Context theContext, String[] objects, int theLayoutResId) {
+            super(theContext, theLayoutResId, android.R.id.text1, objects);
+        }
+
+        @Override
+        public int getCount() {
+            int count = super.getCount();
+            return count > 0 ? count - 1 : count;
+        }
+    }
 }
