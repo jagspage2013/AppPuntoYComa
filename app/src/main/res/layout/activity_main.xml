@@ -7,44 +7,35 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/fondo9"
     tools:context="mx.unam.saic.puntoycoma.controladores.MainActivity" >
 
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@string/app_name"
-        android:scaleType="fitXY"
-        android:src="@drawable/fondo9" />
 
-    <TextView
-        android:id="@+id/greeting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
-        android:layout_gravity="center"
-        android:textColor="#333"
-        android:textSize="18sp"/>
-     <com.facebook.widget.ProfilePictureView
-        android:id="@+id/profilePicture"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="10dp"
-        facebook:preset_size="normal"/>
+
     <com.facebook.widget.LoginButton
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageView1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="98dp"
         facebook:confirm_logout="false"
-        facebook:fetch_user_info="true" />
-	<Button
-        android:id="@+id/lanzar"
+        facebook:fetch_user_info="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <view
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Registrar" />
+        class="com.google.android.gms.common.SignInButton"
+        android:id="@+id/sing_in_button"
+        android:layout_above="@+id/login_button"
+        android:layout_centerHorizontal="true" />
+        facebook:fetch_user_info="true" />
+	<Button
+        android:id="@+id/ir_registrar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registrar"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
 
 </RelativeLayout>

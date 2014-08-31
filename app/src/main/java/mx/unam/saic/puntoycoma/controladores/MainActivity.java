@@ -3,9 +3,12 @@ package mx.unam.saic.puntoycoma.controladores;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -22,15 +25,15 @@ import com.google.android.gms.plus.PlusClient;
 
 import mx.unam.saic.puntoycoma.R;
 import mx.unam.saic.puntoycoma.util.ConnectionDetector;
+import mx.unam.saic.puntoycoma.util.Constants;
 
 
-public class MainActivity extends ActionBarActivity implements ConnectionCallbacks, OnConnectionFailedListener{
+public class MainActivity extends ActionBarActivity implements View.OnClickListener,ConnectionCallbacks, OnConnectionFailedListener{
 
     public static final int REQUEST_CODE_RESOLVE_ERR = 9000;
     private ProgressDialog mConnectionProgressDialog;
     private PlusClient mPlusClient;
     private ConnectionResult mConnectionResult;
-
     private UiLifecycleHelper uiHelper;
 
     private Session.StatusCallback callback = new Session.StatusCallback() {
@@ -46,10 +49,16 @@ public class MainActivity extends ActionBarActivity implements ConnectionCallbac
         setContentView(R.layout.activity_main);
         uiHelper = new UiLifecycleHelper(this, callback);
         uiHelper.onCreate(savedInstanceState);
+        mPlusClient = new PlusClient.Builder(this,this,this).
+        setActions("http://schemas.google.com/AddActivity", "http://schemas.google.com/BuyActivity").
+        setScopes("PLUS_LOGIN").
+        build();
 
-        mPlusClient = new PlusClient.Builder(this,this,this).build();
+        findViewById(R.id.sing_in_button).setOnClickListener(this);
+        mConnectionProgressDialog = new ProgressDialog(this);
+        mConnectionProgressDialog.setMessage("Iniciando Sesión");
 
-        if(!(new ConnectionDetector(this).isConnectedToInternet())){
+        if(!(ConnectionDetector.isConnectedToInternet(this))){
             Log.d("SAIC","No está Conectado a internet... haz algo duh");
         }
 
@@ -58,12 +67,11 @@ public class MainActivity extends ActionBarActivity implements ConnectionCallbac
             int requestCode = 10;
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status,
                     this, requestCode);
-           // dialog.show();
-        }	
+            dialog.show();
+        }
 		
 		//agregando registro
-		registro = (Button) findViewById(R.id.lanzar);
-        registro.setOnClickListener(new View.OnClickListener() {
+		((Button) findViewById(R.id.ir_registrar)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
             	Intent i = new Intent(MainActivity.this, Registro.class);
                 startActivity(i);
@@ -91,6 +99,10 @@ public class MainActivity extends ActionBarActivity implements ConnectionCallbac
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         uiHelper.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_RESOLVE_ERR && resultCode == RESULT_OK) {
+            mConnectionResult = null;
+            mPlusClient.connect();
+        }
     }
 
     @Override
@@ -123,6 +135,7 @@ public class MainActivity extends ActionBarActivity implements ConnectionCallbac
             makeARequest(session);
         } else if (state.isClosed()) {
             Log.i("SAIC", "Logged out...");
+            Constants.setName(this,"");
         }
     }
 
@@ -134,6 +147,7 @@ public class MainActivity extends ActionBarActivity implements ConnectionCallbac
                 if(session == Session.getActiveSession()){
                     if(user!= null){
                         Log.d("SAIC","EL USUARIO ES : "+ user.getFirstName() + user.getMiddleName() +user.getLastName());
+                        Constants.setName(getApplicationContext(),user.getFirstName()+" " + user.getMiddleName()+" "  +user.getLastName());
                     }
                 }
                 if (response.getError() != null) {
@@ -146,8 +160,8 @@ public class MainActivity extends ActionBarActivity implements ConnectionCallbac
 
     @Override
     public void onConnected(Bundle bundle) {
-        String name  = mPlusClient.getAccountName();
-        Log.d("SAIC","Google Plus name = "+name);
+        mConnectionProgressDialog.dismiss();
+        //Log.d("SAIC","Google Plus name = "+name);
     }
 
     @Override
@@ -158,5 +172,29 @@ public class MainActivity extends ActionBarActivity implements ConnectionCallbac
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
+        if(connectionResult.hasResolution()){
+            try {
+                connectionResult.startResolutionForResult(this,REQUEST_CODE_RESOLVE_ERR);
+            }catch (IntentSender.SendIntentException e){
+                mPlusClient.connect();
+            }
+        }
+        mConnectionResult = connectionResult;
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.sing_in_button && !mPlusClient.isConnected()){
+            if(mConnectionResult == null){
+                mConnectionProgressDialog.show();
+            }else{
+                try {
+                    mConnectionResult.startResolutionForResult(this,REQUEST_CODE_RESOLVE_ERR);
+                }catch (IntentSender.SendIntentException e){
+                    mConnectionResult=null;
+                    mPlusClient.connect();
+                }
+            }
+        }
     }
 }
