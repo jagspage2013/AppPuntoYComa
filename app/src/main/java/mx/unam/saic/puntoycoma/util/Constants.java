@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 /**
  * Created by jagspage2013 on 28/08/14.
  */
+//clase que se encarga de guardar en memoria el nombre del usuario y regresar el nombre
 public class Constants {
 
     public static void setName(Context context,String name){

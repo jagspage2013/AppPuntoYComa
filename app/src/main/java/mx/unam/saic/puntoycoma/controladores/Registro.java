@@ -19,7 +19,7 @@ import mx.unam.saic.puntoycoma.R;
 import mx.unam.saic.puntoycoma.objetos.RegistroAlumno;
 import mx.unam.saic.puntoycoma.util.Constants;
 
-
+//supongo que lo cambiaste para poder usar los menus
 public class Registro extends ActionBarActivity {
 
     private Button registrar;
@@ -27,7 +27,7 @@ public class Registro extends ActionBarActivity {
     private Spinner carrera;
     private EditText otraEscuela;
     private EditText otraCarrera;
-    private int op1, op2;
+    private int op1, op2;//se declaran de forma global para usarlas como la posicion de los spinners
     public String[] escuelas;
     public String[] carreras;
     private String _escuela;
@@ -45,8 +45,8 @@ public class Registro extends ActionBarActivity {
         otraEscuela = (EditText) findViewById(R.id.otraescuela);
         otraCarrera = (EditText) findViewById(R.id.otracarrera);
 
-        carreras = getResources().getStringArray(R.array.opc_carrera);
-        escuelas = getResources().getStringArray(R.array.opc_escuela);
+        carreras = getResources().getStringArray(R.array.opc_carrera);//importamos los arrays, ya no son declarados dentro de esta
+        escuelas = getResources().getStringArray(R.array.opc_escuela);//clase si no dentro de los arvhivos xml que se llaman aqui
 
         otraEscuela.setVisibility(View.INVISIBLE);
         otraCarrera.setVisibility(View.INVISIBLE);
@@ -56,7 +56,8 @@ public class Registro extends ActionBarActivity {
 
     }
 
-
+    //con este metodo se agregara al registro la escuela y carrera ya sea de los spinners o bien de los casos
+    //especiales en los que la escuela o carrera no esten agregados en el spinner
     private void agregarEventoBoton() {
         registrar.setOnClickListener(new View.OnClickListener() {
 
@@ -75,7 +76,7 @@ public class Registro extends ActionBarActivity {
 
                     if (!_escuela.isEmpty() && !_carrera.isEmpty()) {
                         enviarRegistro(_escuela, _carrera);
-                        Log.d("SAIC","OP:"+escuelas.length+carreras.length);
+                        Log.d("SAIC","OP:"+escuelas.length+carreras.length);//salidas del registro
                     } else {
                         Toast.makeText(getBaseContext(), "Completa el registro", Toast.LENGTH_SHORT).show();
                     }
@@ -87,7 +88,8 @@ public class Registro extends ActionBarActivity {
             }
         });
     }
-
+    //todo esto servira para el registro de los usuarios que entraran a punto y comma, con esto se guardaran los datos de
+    //los usuarios en la nuve
     private void enviarRegistro(String escuela, String carrera) {
         RegistroAlumno reg = new RegistroAlumno();
         reg.setNombre(Constants.getName(this));
@@ -107,7 +109,7 @@ public class Registro extends ActionBarActivity {
     }
 
     private void adaptarSpinner1() {
-
+        //agrgamos un adaptador para que por defecto tenga una opción seleccionada
         HintAdapter adapter = new HintAdapter(this, escuelas, android.R.layout.simple_spinner_item);
         final int count = adapter.getCount() - 1;
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -155,7 +157,7 @@ public class Registro extends ActionBarActivity {
         });
 
     }
-
+    //se genera una clase para adaptar los spinners y aparte ponerle una pista
     class HintAdapter extends ArrayAdapter<String> {
 
         public HintAdapter(Context theContext, String[] objects, int theLayoutResId) {

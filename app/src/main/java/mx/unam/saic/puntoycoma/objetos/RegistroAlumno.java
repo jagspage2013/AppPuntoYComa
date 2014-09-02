@@ -8,7 +8,9 @@ import com.parse.ParseUser;
  * Created by jagspage2013 on 28/08/14.
  */
 @ParseClassName("RegistroAlumno")
-
+//todo esto es un objeto del tipo parse
+//put sirve para guardar 
+//getParseUser sirve para sacar datos guardados
 public class RegistroAlumno extends ParseObject {
 
     public RegistroAlumno(){
@@ -16,10 +18,10 @@ public class RegistroAlumno extends ParseObject {
     }
 
     public void setParseUser(ParseUser user){
-        put("usuario",user);
+        put("usuario",user);//guardamos una variable usuario
     }
     public ParseUser getParseUser(){
-        return getParseUser("usuario");
+        return getParseUser("usuario");//regresa el usuario que hemos guardado
     }
 
     public void setEscuela(String escuela){
@@ -38,6 +40,10 @@ public class RegistroAlumno extends ParseObject {
         return getString("carrera");
     }
 
-    public void setNombre(String nombre){put("nombre",nombre);}
-    public String getNombre(){return getString("nombre");}
+    public void setNombre(String nombre){
+        put("nombre",nombre);
+    }
+    public String getNombre(){
+        return getString("nombre");
+    }
 }

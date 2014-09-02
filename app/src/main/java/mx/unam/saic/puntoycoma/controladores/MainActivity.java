@@ -27,7 +27,7 @@ import mx.unam.saic.puntoycoma.R;
 import mx.unam.saic.puntoycoma.util.ConnectionDetector;
 import mx.unam.saic.puntoycoma.util.Constants;
 
-
+//utilizamos ConectionCallbacks y OnConnectionFailedListener para saber el estado de la conexion (establecida o falle)
 public class MainActivity extends ActionBarActivity implements View.OnClickListener,ConnectionCallbacks, OnConnectionFailedListener{
 
     public static final int REQUEST_CODE_RESOLVE_ERR = 9000;
@@ -47,13 +47,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //controles de ¿facebook?
         uiHelper = new UiLifecycleHelper(this, callback);
         uiHelper.onCreate(savedInstanceState);
+        //controles de g+
         mPlusClient = new PlusClient.Builder(this,this,this).
         setActions("http://schemas.google.com/AddActivity", "http://schemas.google.com/BuyActivity").
         setScopes("PLUS_LOGIN").
         build();
-
+        //boton de g+
         findViewById(R.id.sing_in_button).setOnClickListener(this);
         mConnectionProgressDialog = new ProgressDialog(this);
         mConnectionProgressDialog.setMessage("Iniciando Sesión");
@@ -95,13 +97,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     }
 
+//aqui se guarda el estado de la conexion, si se logro o no
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         uiHelper.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_RESOLVE_ERR && resultCode == RESULT_OK) {
             mConnectionResult = null;
-            mPlusClient.connect();
+            mPlusClient.connect();//conectar con g+
         }
     }
 
@@ -128,7 +131,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         super.onDestroy();
         uiHelper.onDestroy();
     }
-
+//dice el estado de la secion, si esta iniciada o no
     private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (session != null && state.isOpened()) {
             Log.i("SAIC", "Logged in...");
@@ -138,14 +141,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             Constants.setName(this,"");
         }
     }
-
+//ayudara con el estado de la secion en ¿facebook?
     private void makeARequest(final Session session) {
 
         Request request = Request.newMeRequest(session, new Request.GraphUserCallback() {
             @Override
             public void onCompleted(GraphUser user, Response response) {
                 if(session == Session.getActiveSession()){
-                    if(user!= null){
+                    if(user!= null){//si hay una secion inicida brindara los datos de esta
                         Log.d("SAIC","EL USUARIO ES : "+ user.getFirstName() + user.getMiddleName() +user.getLastName());
                         Constants.setName(getApplicationContext(),user.getFirstName()+" " + user.getMiddleName()+" "  +user.getLastName());
                     }
@@ -157,18 +160,18 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         });
         request.executeAsync();
     }
-
+//si se resuelven todos los errores
     @Override
     public void onConnected(Bundle bundle) {
         mConnectionProgressDialog.dismiss();
         //Log.d("SAIC","Google Plus name = "+name);
     }
-
+//si se esta desconectado
     @Override
     public void onDisconnected() {
 
     }
-
+//si PlusClient falla este actuara para tratar de estableces la conexion
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
@@ -182,6 +185,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         mConnectionResult = connectionResult;
     }
 
+//acciones del boton para g+
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.sing_in_button && !mPlusClient.isConnected()){
