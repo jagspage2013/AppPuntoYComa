@@ -1,14 +1,16 @@
 package mx.unam.saic.puntoycoma.controladores;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -17,24 +19,28 @@ import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
-import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
-
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.plus.PlusClient;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 
 import mx.unam.saic.puntoycoma.R;
 import mx.unam.saic.puntoycoma.util.ConnectionDetector;
 import mx.unam.saic.puntoycoma.util.Constants;
 
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener,ConnectionCallbacks, OnConnectionFailedListener{
+public class MainActivity extends ActionBarActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     public static final int REQUEST_CODE_RESOLVE_ERR = 9000;
-    private ProgressDialog mConnectionProgressDialog;
-    private PlusClient mPlusClient;
+    private GoogleApiClient apiClient;
     private ConnectionResult mConnectionResult;
     private UiLifecycleHelper uiHelper;
+    private boolean mIntentInProgress;
+    private boolean mSignInClicked;
+    private static final int RC_SIGN_IN = 0;
+    private SignInButton btn_sign_in;
+
 
     private Session.StatusCallback callback = new Session.StatusCallback() {
         @Override
@@ -49,43 +55,41 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         uiHelper = new UiLifecycleHelper(this, callback);
         uiHelper.onCreate(savedInstanceState);
-        mPlusClient = new PlusClient.Builder(this,this,this).
-        setActions("http://schemas.google.com/AddActivity", "http://schemas.google.com/BuyActivity").
-        setScopes("PLUS_LOGIN").
-        build();
+        apiClient = new GoogleApiClient.Builder(this).
+                addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this).addApi(Plus.API)
+                .addScope(Plus.SCOPE_PLUS_LOGIN).build();
 
-        findViewById(R.id.sing_in_button).setOnClickListener(this);
-        mConnectionProgressDialog = new ProgressDialog(this);
-        mConnectionProgressDialog.setMessage("Iniciando Sesión");
+        btn_sign_in = ((SignInButton) findViewById(R.id.sing_in_button));
+        btn_sign_in.setOnClickListener(this);
 
-        if(!(ConnectionDetector.isConnectedToInternet(this))){
-            Log.d("SAIC","No está Conectado a internet... haz algo duh");
+        if (!(ConnectionDetector.isConnectedToInternet(this))) {
+            Log.d(Constants.TAG, "No está Conectado a internet... haz algo duh");
         }
 
-        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (status != ConnectionResult.SUCCESS) { // Google Play Services are not available
+        //int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        /*if (status != ConnectionResult.SUCCESS) { // Google Play Services are not available
             int requestCode = 10;
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status,
                     this, requestCode);
             dialog.show();
+        }*/
+
+        if((apiClient.isConnected() || Session.getActiveSession().isOpened()) || !Constants.getName(this).equals("")){
+            goToNextActivity();
         }
-		
-		//agregando registro
-		((Button) findViewById(R.id.ir_registrar)).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-            	Intent i = new Intent(MainActivity.this, Registro.class);
-                startActivity(i);
-            }
-        });
+
 
 
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        uiHelper.onResume();
-
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.sing_in_button:
+                signInToGooglePlus();
+                break;
+        }
     }
 
     @Override
@@ -99,11 +103,26 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         uiHelper.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_RESOLVE_ERR && resultCode == RESULT_OK) {
-            mConnectionResult = null;
-            mPlusClient.connect();
+
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode != RESULT_OK) {
+                mSignInClicked = false;
+            }
+                mIntentInProgress = false;
+            if (!apiClient.isConnecting()) {
+                apiClient.connect();
+            }
         }
+
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        uiHelper.onResume();
+
+    }
+
 
     @Override
     public void onPause() {
@@ -114,13 +133,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        mPlusClient.connect();
+        apiClient.connect();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mPlusClient.disconnect();
+        if (apiClient.isConnected()) {
+            apiClient.disconnect();
+        }
     }
 
     @Override
@@ -131,11 +152,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (session != null && state.isOpened()) {
-            Log.i("SAIC", "Logged in...");
-            makeARequest(session);
+            Log.i(Constants.TAG, "Logged in...");
+            if(Constants.getName(this).equals("")) {
+                makeARequest(session);
+            } else{
+                goToFormularioActivity();
+            }
+
         } else if (state.isClosed()) {
-            Log.i("SAIC", "Logged out...");
-            Constants.setName(this,"");
+            Log.i(Constants.TAG, "Logged out...");
+            Constants.setName(this, "");
         }
     }
 
@@ -144,14 +170,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         Request request = Request.newMeRequest(session, new Request.GraphUserCallback() {
             @Override
             public void onCompleted(GraphUser user, Response response) {
-                if(session == Session.getActiveSession()){
-                    if(user!= null){
-                        Log.d("SAIC","EL USUARIO ES : "+ user.getFirstName() + user.getMiddleName() +user.getLastName());
-                        Constants.setName(getApplicationContext(),user.getFirstName()+" " + user.getMiddleName()+" "  +user.getLastName());
+                if (session == Session.getActiveSession()) {
+                    if (user != null) {
+                        Log.d(Constants.TAG, "EL USUARIO ES : " + user.getFirstName() + user.getMiddleName() + user.getLastName());
+                        Constants.setName(getApplicationContext(), user.getFirstName() + " " + user.getMiddleName() + " " + user.getLastName());
+                        goToNextActivity();
                     }
                 }
                 if (response.getError() != null) {
-                    Log.d("SAIC","EL Error ES : "+ response.getRawResponse());
+                    Log.d(Constants.TAG, "EL Error ES : " + response.getRawResponse());
                 }
             }
         });
@@ -160,41 +187,97 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onConnected(Bundle bundle) {
-        mConnectionProgressDialog.dismiss();
-        //Log.d("SAIC","Google Plus name = "+name);
+        mSignInClicked = false;
+        Toast.makeText(this, "Bienvenido a Punto y Coma", Toast.LENGTH_SHORT).show();
+        if(!Constants.getName(this).equals("")){
+            goToFormularioActivity();
+        }else{
+            getProfileInformation();
+        }
+    }
+
+    private void goToFormularioActivity() {
+        Intent intent = new Intent(MainActivity.this,Registro.class);
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= Build.VERSION_CODES.HONEYCOMB){
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        } else{
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        startActivity(intent);
     }
 
     @Override
-    public void onDisconnected() {
-
+    public void onConnectionSuspended(int i) {
+        apiClient.connect();
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void onConnectionFailed(ConnectionResult result) {
+        if (!result.hasResolution()) {
+            GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), this, 0).show();
+            return;
+        }
 
-        if(connectionResult.hasResolution()){
+        if (!mIntentInProgress) {
+            mConnectionResult = result;
+            if (mSignInClicked) {
+                resolveSignInError();
+            }
+        }
+
+    }
+
+    private void resolveSignInError() {
+        if (mConnectionResult.hasResolution()) {
             try {
-                connectionResult.startResolutionForResult(this,REQUEST_CODE_RESOLVE_ERR);
-            }catch (IntentSender.SendIntentException e){
-                mPlusClient.connect();
+                mIntentInProgress = true;
+                mConnectionResult.startResolutionForResult(this, RC_SIGN_IN);
+            } catch (IntentSender.SendIntentException e) {
+                mIntentInProgress = false;
+                apiClient.connect();
             }
         }
-        mConnectionResult = connectionResult;
     }
 
-    @Override
-    public void onClick(View view) {
-        if(view.getId() == R.id.sing_in_button && !mPlusClient.isConnected()){
-            if(mConnectionResult == null){
-                mConnectionProgressDialog.show();
-            }else{
-                try {
-                    mConnectionResult.startResolutionForResult(this,REQUEST_CODE_RESOLVE_ERR);
-                }catch (IntentSender.SendIntentException e){
-                    mConnectionResult=null;
-                    mPlusClient.connect();
-                }
-            }
+
+    private void signInToGooglePlus() {
+        if (!apiClient.isConnecting()) {
+            mSignInClicked = true;
+            resolveSignInError();
         }
+    }
+
+
+    private void getProfileInformation() {
+        try {
+            if (Plus.PeopleApi.getCurrentPerson(apiClient) != null) {
+                Person currentPerson = Plus.PeopleApi
+                        .getCurrentPerson(apiClient);
+                String personName = currentPerson.getDisplayName();
+
+                if(!personName.equals("")){
+                    Constants.setName(this,personName);
+                    goToFormularioActivity();
+                }
+
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        "Person information is null", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void goToNextActivity(){
+        Intent intent = new Intent(MainActivity.this,ActivityPuntoYComa.class);
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= Build.VERSION_CODES.HONEYCOMB){
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        } else{
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        startActivity(intent);
     }
 }

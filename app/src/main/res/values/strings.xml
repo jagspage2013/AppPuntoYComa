@@ -11,8 +11,9 @@
     <string name="status_update">Actualizando estado %1$s en %2$s</string>
     <string name="app_id">1473019672945911</string>
     <string name="get_started">Para iniciar, log en Facebook</string>
-    <string name="spinner_carrera" >Elige tu Carrera...</string>
-    <string name="spinner_escuela" >Elige tu Escuela...</string>
+    <string name="spinner_carrera">Elige tu Carrera...</string>
+    <string name="spinner_escuela">Elige tu Escuela...</string>
+
     <string-array name="opc_carrera">
         <item>UNAM</item>
         <item>IPN</item>
@@ -30,5 +31,12 @@
         <item>Selecciona tu Escuela</item>
     </string-array>
 
+    <string name="title_activity_activity_punto_ycoma">Punto y Coma 2014</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
 
 </resources>

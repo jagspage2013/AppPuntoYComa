@@ -1,6 +1,8 @@
 package mx.unam.saic.puntoycoma.controladores;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -93,7 +95,12 @@ public class Registro extends ActionBarActivity {
         reg.setNombre(Constants.getName(this));
         reg.setEscuela(escuela);
         reg.setCarrera(carrera);
-        reg.saveInBackground(new SaveCallback() {
+        try {
+            reg.save();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        reg.saveEventually(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
@@ -104,6 +111,8 @@ public class Registro extends ActionBarActivity {
                 }
             }
         });
+
+        goToNextActivity();
     }
 
     private void adaptarSpinner1() {
@@ -167,5 +176,16 @@ public class Registro extends ActionBarActivity {
             int count = super.getCount();
             return count > 0 ? count - 1 : count;
         }
+    }
+
+    private void goToNextActivity(){
+        Intent intent = new Intent(Registro.this,ActivityPuntoYComa.class);
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= Build.VERSION_CODES.HONEYCOMB){
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        } else{
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        startActivity(intent);
     }
 }
