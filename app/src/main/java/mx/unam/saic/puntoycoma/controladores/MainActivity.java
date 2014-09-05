@@ -29,8 +29,13 @@ import mx.unam.saic.puntoycoma.R;
 import mx.unam.saic.puntoycoma.util.ConnectionDetector;
 import mx.unam.saic.puntoycoma.util.Constants;
 
+<<<<<<< HEAD
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+=======
+//utilizamos ConectionCallbacks y OnConnectionFailedListener para saber el estado de la conexion (establecida o falle)
+public class MainActivity extends ActionBarActivity implements View.OnClickListener,ConnectionCallbacks, OnConnectionFailedListener{
+>>>>>>> FETCH_HEAD
 
     public static final int REQUEST_CODE_RESOLVE_ERR = 9000;
     private GoogleApiClient apiClient;
@@ -53,8 +58,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //controles de ¿facebook?
         uiHelper = new UiLifecycleHelper(this, callback);
         uiHelper.onCreate(savedInstanceState);
+<<<<<<< HEAD
         apiClient = new GoogleApiClient.Builder(this).
                 addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).addApi(Plus.API)
@@ -62,6 +69,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         btn_sign_in = ((SignInButton) findViewById(R.id.sing_in_button));
         btn_sign_in.setOnClickListener(this);
+=======
+        //controles de g+
+        mPlusClient = new PlusClient.Builder(this,this,this).
+        setActions("http://schemas.google.com/AddActivity", "http://schemas.google.com/BuyActivity").
+        setScopes("PLUS_LOGIN").
+        build();
+        //boton de g+
+        findViewById(R.id.sing_in_button).setOnClickListener(this);
+        mConnectionProgressDialog = new ProgressDialog(this);
+        mConnectionProgressDialog.setMessage("Iniciando Sesión");
+>>>>>>> FETCH_HEAD
 
         if (!(ConnectionDetector.isConnectedToInternet(this))) {
             Log.d(Constants.TAG, "No está Conectado a internet... haz algo duh");
@@ -99,10 +117,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     }
 
+//aqui se guarda el estado de la conexion, si se logro o no
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         uiHelper.onActivityResult(requestCode, resultCode, data);
+<<<<<<< HEAD
 
         if (requestCode == RC_SIGN_IN) {
             if (resultCode != RESULT_OK) {
@@ -112,6 +132,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             if (!apiClient.isConnecting()) {
                 apiClient.connect();
             }
+=======
+        if (requestCode == REQUEST_CODE_RESOLVE_ERR && resultCode == RESULT_OK) {
+            mConnectionResult = null;
+            mPlusClient.connect();//conectar con g+
+>>>>>>> FETCH_HEAD
         }
 
     }
@@ -149,7 +174,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         super.onDestroy();
         uiHelper.onDestroy();
     }
-
+//dice el estado de la secion, si esta iniciada o no
     private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (session != null && state.isOpened()) {
             Log.i(Constants.TAG, "Logged in...");
@@ -164,17 +189,24 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             Constants.setName(this, "");
         }
     }
-
+//ayudara con el estado de la secion en ¿facebook?
     private void makeARequest(final Session session) {
 
         Request request = Request.newMeRequest(session, new Request.GraphUserCallback() {
             @Override
             public void onCompleted(GraphUser user, Response response) {
+<<<<<<< HEAD
                 if (session == Session.getActiveSession()) {
                     if (user != null) {
                         Log.d(Constants.TAG, "EL USUARIO ES : " + user.getFirstName() + user.getMiddleName() + user.getLastName());
                         Constants.setName(getApplicationContext(), user.getFirstName() + " " + user.getMiddleName() + " " + user.getLastName());
                         goToNextActivity();
+=======
+                if(session == Session.getActiveSession()){
+                    if(user!= null){//si hay una secion inicida brindara los datos de esta
+                        Log.d("SAIC","EL USUARIO ES : "+ user.getFirstName() + user.getMiddleName() +user.getLastName());
+                        Constants.setName(getApplicationContext(),user.getFirstName()+" " + user.getMiddleName()+" "  +user.getLastName());
+>>>>>>> FETCH_HEAD
                     }
                 }
                 if (response.getError() != null) {
@@ -184,7 +216,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         });
         request.executeAsync();
     }
-
+//si se resuelven todos los errores
     @Override
     public void onConnected(Bundle bundle) {
         mSignInClicked = false;
@@ -195,6 +227,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             getProfileInformation();
         }
     }
+<<<<<<< HEAD
 
     private void goToFormularioActivity() {
         Intent intent = new Intent(MainActivity.this,Registro.class);
@@ -206,12 +239,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
         startActivity(intent);
     }
+=======
+//si se esta desconectado
+    @Override
+    public void onDisconnected() {
+>>>>>>> FETCH_HEAD
 
     @Override
     public void onConnectionSuspended(int i) {
         apiClient.connect();
     }
-
+//si PlusClient falla este actuara para tratar de estableces la conexion
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         if (!result.hasResolution()) {
@@ -240,6 +278,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
     }
 
+<<<<<<< HEAD
 
     private void signInToGooglePlus() {
         if (!apiClient.isConnecting()) {
@@ -259,6 +298,20 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 if(!personName.equals("")){
                     Constants.setName(this,personName);
                     goToFormularioActivity();
+=======
+//acciones del boton para g+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.sing_in_button && !mPlusClient.isConnected()){
+            if(mConnectionResult == null){
+                mConnectionProgressDialog.show();
+            }else{
+                try {
+                    mConnectionResult.startResolutionForResult(this,REQUEST_CODE_RESOLVE_ERR);
+                }catch (IntentSender.SendIntentException e){
+                    mConnectionResult=null;
+                    mPlusClient.connect();
+>>>>>>> FETCH_HEAD
                 }
 
             } else {
