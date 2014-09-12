@@ -1,15 +1,12 @@
 package mx.unam.saic.puntoycoma.controladores;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.facebook.Request;
@@ -19,7 +16,6 @@ import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
@@ -29,15 +25,10 @@ import mx.unam.saic.puntoycoma.R;
 import mx.unam.saic.puntoycoma.util.ConnectionDetector;
 import mx.unam.saic.puntoycoma.util.Constants;
 
-<<<<<<< HEAD
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-=======
-//utilizamos ConectionCallbacks y OnConnectionFailedListener para saber el estado de la conexion (establecida o falle)
-public class MainActivity extends ActionBarActivity implements View.OnClickListener,ConnectionCallbacks, OnConnectionFailedListener{
->>>>>>> FETCH_HEAD
 
-    public static final int REQUEST_CODE_RESOLVE_ERR = 9000;
+
     private GoogleApiClient apiClient;
     private ConnectionResult mConnectionResult;
     private UiLifecycleHelper uiHelper;
@@ -58,10 +49,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (!Constants.getName(this).equals("")) {
+            goToNextActivity();
+        }
         //controles de ¿facebook?
         uiHelper = new UiLifecycleHelper(this, callback);
         uiHelper.onCreate(savedInstanceState);
-<<<<<<< HEAD
         apiClient = new GoogleApiClient.Builder(this).
                 addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).addApi(Plus.API)
@@ -69,17 +62,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         btn_sign_in = ((SignInButton) findViewById(R.id.sing_in_button));
         btn_sign_in.setOnClickListener(this);
-=======
-        //controles de g+
-        mPlusClient = new PlusClient.Builder(this,this,this).
-        setActions("http://schemas.google.com/AddActivity", "http://schemas.google.com/BuyActivity").
-        setScopes("PLUS_LOGIN").
-        build();
-        //boton de g+
-        findViewById(R.id.sing_in_button).setOnClickListener(this);
-        mConnectionProgressDialog = new ProgressDialog(this);
-        mConnectionProgressDialog.setMessage("Iniciando Sesión");
->>>>>>> FETCH_HEAD
+
 
         if (!(ConnectionDetector.isConnectedToInternet(this))) {
             Log.d(Constants.TAG, "No está Conectado a internet... haz algo duh");
@@ -92,13 +75,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     this, requestCode);
             dialog.show();
         }*/
-
-        if((apiClient.isConnected() || Session.getActiveSession().isOpened()) || !Constants.getName(this).equals("")){
-            goToNextActivity();
-        }
-
-
-
     }
 
     @Override
@@ -117,26 +93,21 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     }
 
-//aqui se guarda el estado de la conexion, si se logro o no
+    //aqui se guarda el estado de la conexion, si se logro o no
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         uiHelper.onActivityResult(requestCode, resultCode, data);
-<<<<<<< HEAD
+
 
         if (requestCode == RC_SIGN_IN) {
             if (resultCode != RESULT_OK) {
                 mSignInClicked = false;
             }
-                mIntentInProgress = false;
+            mIntentInProgress = false;
             if (!apiClient.isConnecting()) {
                 apiClient.connect();
             }
-=======
-        if (requestCode == REQUEST_CODE_RESOLVE_ERR && resultCode == RESULT_OK) {
-            mConnectionResult = null;
-            mPlusClient.connect();//conectar con g+
->>>>>>> FETCH_HEAD
         }
 
     }
@@ -174,14 +145,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         super.onDestroy();
         uiHelper.onDestroy();
     }
-//dice el estado de la secion, si esta iniciada o no
+
+    //dice el estado de la secion, si esta iniciada o no
     private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (session != null && state.isOpened()) {
             Log.i(Constants.TAG, "Logged in...");
-            if(Constants.getName(this).equals("")) {
+            if (Constants.getName(this).equals("")) {
                 makeARequest(session);
-            } else{
-                goToFormularioActivity();
+            } else {
+                if(!Constants.getName(this).equals(""))
+                    goToNextActivity();
             }
 
         } else if (state.isClosed()) {
@@ -189,71 +162,64 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             Constants.setName(this, "");
         }
     }
-//ayudara con el estado de la secion en ¿facebook?
+
+    //ayudara con el estado de la secion en ¿facebook?
     private void makeARequest(final Session session) {
 
         Request request = Request.newMeRequest(session, new Request.GraphUserCallback() {
             @Override
             public void onCompleted(GraphUser user, Response response) {
-<<<<<<< HEAD
                 if (session == Session.getActiveSession()) {
                     if (user != null) {
                         Log.d(Constants.TAG, "EL USUARIO ES : " + user.getFirstName() + user.getMiddleName() + user.getLastName());
                         Constants.setName(getApplicationContext(), user.getFirstName() + " " + user.getMiddleName() + " " + user.getLastName());
                         goToNextActivity();
-=======
-                if(session == Session.getActiveSession()){
-                    if(user!= null){//si hay una secion inicida brindara los datos de esta
-                        Log.d("SAIC","EL USUARIO ES : "+ user.getFirstName() + user.getMiddleName() +user.getLastName());
-                        Constants.setName(getApplicationContext(),user.getFirstName()+" " + user.getMiddleName()+" "  +user.getLastName());
->>>>>>> FETCH_HEAD
+
                     }
-                }
-                if (response.getError() != null) {
-                    Log.d(Constants.TAG, "EL Error ES : " + response.getRawResponse());
+                    if (response.getError() != null) {
+                        Log.d(Constants.TAG, "EL Error ES : " + response.getRawResponse());
+                    }
                 }
             }
         });
         request.executeAsync();
     }
-//si se resuelven todos los errores
+
+    //si se resuelven todos los errores
     @Override
     public void onConnected(Bundle bundle) {
         mSignInClicked = false;
         Toast.makeText(this, "Bienvenido a Punto y Coma", Toast.LENGTH_SHORT).show();
-        if(!Constants.getName(this).equals("")){
-            goToFormularioActivity();
-        }else{
+        if (!Constants.getName(this).equals("")) {
+            goToNextActivity();
+        } else {
             getProfileInformation();
         }
     }
-<<<<<<< HEAD
+
 
     private void goToFormularioActivity() {
-        Intent intent = new Intent(MainActivity.this,Registro.class);
+        Intent intent = new Intent(MainActivity.this, Registro.class);
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion >= Build.VERSION_CODES.HONEYCOMB){
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
-        } else{
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (currentapiVersion >= Build.VERSION_CODES.HONEYCOMB) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        } else {
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         }
         startActivity(intent);
     }
-=======
-//si se esta desconectado
-    @Override
-    public void onDisconnected() {
->>>>>>> FETCH_HEAD
+
 
     @Override
     public void onConnectionSuspended(int i) {
         apiClient.connect();
     }
-//si PlusClient falla este actuara para tratar de estableces la conexion
+
+    //si PlusClient falla este actuara para tratar de estableces la conexion
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         if (!result.hasResolution()) {
-            GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), this, 0).show();
+            //GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), this, 0).show();
             return;
         }
 
@@ -267,20 +233,22 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void resolveSignInError() {
-        if (mConnectionResult.hasResolution()) {
-            try {
-                mIntentInProgress = true;
-                mConnectionResult.startResolutionForResult(this, RC_SIGN_IN);
-            } catch (IntentSender.SendIntentException e) {
-                mIntentInProgress = false;
-                apiClient.connect();
+        if(mConnectionResult != null) {
+            if (mConnectionResult.hasResolution()) {
+                try {
+                    mIntentInProgress = true;
+                    mConnectionResult.startResolutionForResult(this, RC_SIGN_IN);
+                } catch (IntentSender.SendIntentException e) {
+                    mIntentInProgress = false;
+                    apiClient.connect();
+                }
             }
         }
     }
 
-<<<<<<< HEAD
 
     private void signInToGooglePlus() {
+
         if (!apiClient.isConnecting()) {
             mSignInClicked = true;
             resolveSignInError();
@@ -295,23 +263,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         .getCurrentPerson(apiClient);
                 String personName = currentPerson.getDisplayName();
 
-                if(!personName.equals("")){
-                    Constants.setName(this,personName);
+                if (!personName.equals("")) {
+                    Constants.setName(this, personName);
                     goToFormularioActivity();
-=======
-//acciones del boton para g+
-    @Override
-    public void onClick(View view) {
-        if(view.getId() == R.id.sing_in_button && !mPlusClient.isConnected()){
-            if(mConnectionResult == null){
-                mConnectionProgressDialog.show();
-            }else{
-                try {
-                    mConnectionResult.startResolutionForResult(this,REQUEST_CODE_RESOLVE_ERR);
-                }catch (IntentSender.SendIntentException e){
-                    mConnectionResult=null;
-                    mPlusClient.connect();
->>>>>>> FETCH_HEAD
                 }
 
             } else {
@@ -323,13 +277,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
     }
 
-    private void goToNextActivity(){
-        Intent intent = new Intent(MainActivity.this,ActivityPuntoYComa.class);
+    private void goToNextActivity() {
+        Intent intent = new Intent(MainActivity.this, ActivityPuntoYComa.class);
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion >= Build.VERSION_CODES.HONEYCOMB){
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
-        } else{
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (currentapiVersion >= Build.VERSION_CODES.HONEYCOMB) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        } else {
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         }
         startActivity(intent);
     }

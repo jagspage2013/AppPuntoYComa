@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/fondo9"
+    android:background="#0b6b62"
     tools:context="mx.unam.saic.puntoycoma.controladores.MainActivity" >
 
 
@@ -21,8 +21,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
-    <com.google.android.gms.common.SignInButton
-
+    <!--<com.google.android.gms.common.SignInButton-->
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/sing_in_button"
