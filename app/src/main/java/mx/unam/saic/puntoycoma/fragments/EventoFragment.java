@@ -9,17 +9,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import mx.unam.saic.puntoycoma.R;
 import mx.unam.saic.puntoycoma.adaptadores.EventoAdapter;
-import mx.unam.saic.puntoycoma.controladores.ActivityPuntoYComa;
-import mx.unam.saic.puntoycoma.fragments.dummy.DummyContent;
+import mx.unam.saic.puntoycoma.objetos.Listas;
 import mx.unam.saic.puntoycoma.util.Constants;
 
 
 public class EventoFragment extends Fragment  {
 
-    private OnEventFragmentInteraction mListener;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -28,7 +27,7 @@ public class EventoFragment extends Fragment  {
     public static  Fragment newInstanceOf(int sectionNumber){
         EventoFragment fragment = new EventoFragment();
         Bundle args = new Bundle();
-        args.putInt(Constants.ARG_SECTION_NUMBER, sectionNumber);
+        args.putInt(Constants.ARG_DAY, sectionNumber);
         fragment.setArguments(args);
         return fragment;
     }
@@ -36,7 +35,7 @@ public class EventoFragment extends Fragment  {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAdapter = new EventoAdapter(DummyContent.ITEMS);
+        mAdapter = new EventoAdapter(Listas.getListaPorLugar(getArguments().getInt(Constants.ARG_DAY)),contexto);
 
     }
 
@@ -44,13 +43,12 @@ public class EventoFragment extends Fragment  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_evento, container, false);
+        ((TextView)view.findViewById(R.id.lbl_dia_VIEW)).setText(Constants.CEDES[getArguments().getInt(Constants.ARG_DAY)]);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(contexto);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-
-
         return view;
     }
 
@@ -58,25 +56,12 @@ public class EventoFragment extends Fragment  {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         contexto = activity;
-        try {
-            mListener = (OnEventFragmentInteraction) activity;
-            ((ActivityPuntoYComa) activity).onSectionAttached(
-                    getArguments().getInt(Constants.ARG_SECTION_NUMBER));
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-
-    public interface OnEventFragmentInteraction {
-        public void onEventFragmentInteraction(String id);
-    }
 
 }

@@ -1,75 +1,90 @@
 package mx.unam.saic.puntoycoma.controladores;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import mx.unam.saic.puntoycoma.R;
+import mx.unam.saic.puntoycoma.fragments.DiasFragment;
 import mx.unam.saic.puntoycoma.fragments.EventoFragment;
+import mx.unam.saic.puntoycoma.fragments.LugaresFragment;
 import mx.unam.saic.puntoycoma.fragments.NavigationDrawerFragment;
+import mx.unam.saic.puntoycoma.fragments.PonentesFragment;
 import mx.unam.saic.puntoycoma.objetos.Listas;
+import mx.unam.saic.puntoycoma.objetos.Lugar;
+import mx.unam.saic.puntoycoma.objetos.Ponente;
 import mx.unam.saic.puntoycoma.util.Constants;
 
-public class ActivityPuntoYComa extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks,EventoFragment.OnEventFragmentInteraction {
+public class ActivityPuntoYComa extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks{
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private CharSequence mTitle;
-
-
+    private int CURRENT_FRAG;
+    private FragmentManager fragmentManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activity_punto_ycoma);
-        Constants.CURRENT_FRAG = -1;
+        fragmentManager = getSupportFragmentManager();
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
+        CURRENT_FRAG = 0;
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         Listas listas = new Listas();
+        fragmentManager.beginTransaction().replace(R.id.container, DiasFragment.newInstanceOf(CURRENT_FRAG)).commit();
+
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        if(position!=Constants.CURRENT_FRAG) {
+        Log.d(Constants.TAG, "La posición es : " + position);
+        if(position!=CURRENT_FRAG) {
             switch (position) {
-                case 0:
-                    fragmentManager.beginTransaction().replace(R.id.container, EventoFragment.newInstanceOf(position + 1)).commit();
-                    Constants.CURRENT_FRAG = 0;
+                case 0: {
+                    fragmentManager.beginTransaction().replace(R.id.container, DiasFragment.newInstanceOf(position)).commit();
+                    CURRENT_FRAG = 0;
+                    }
                     break;
-                case 1:
+                case 1: {
+                    fragmentManager.beginTransaction().replace(R.id.container, LugaresFragment.newInstanceOf(position)).commit();
+                    CURRENT_FRAG = 1;
+                    }
                     break;
-                case 2:
-                    break;
-                case 3:
-                    break;
+                case 2:{
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.eventbrite.es/e/12890043467")));
+                }
+                break;
+                case 3:{
+                    startActivity(new Intent(ActivityPuntoYComa.this,AcercaDe.class));
+
+                }
+                break;
             }
         }
-
+        Log.d(Constants.TAG,"Posición actual:  ... YOLO "+CURRENT_FRAG );
     }
 
     public void onSectionAttached(int number) {
         switch (number) {
-            case 1:
+            case 0:
                 mTitle = getString(R.string.title_section1);
                 break;
-            case 2:
+            case 1:
                 mTitle = getString(R.string.title_section2);
                 break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
-                break;
-            case 4:
-                mTitle = getString(R.string.title_section4);
+            default:
                 break;
         }
     }
@@ -81,13 +96,9 @@ public class ActivityPuntoYComa extends ActionBarActivity implements NavigationD
         actionBar.setTitle(mTitle);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.activity_punto_ycoma, menu);
             restoreActionBar();
             return true;
@@ -95,21 +106,4 @@ public class ActivityPuntoYComa extends ActionBarActivity implements NavigationD
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    public void onEventFragmentInteraction(String id) {
-
-    }
 }

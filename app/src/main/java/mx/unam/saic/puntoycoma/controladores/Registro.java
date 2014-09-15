@@ -2,11 +2,13 @@ package mx.unam.saic.puntoycoma.controladores;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -38,8 +40,9 @@ public class Registro extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_registro);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         registrar = (Button) findViewById(R.id.button1);
         escuela = (Spinner) findViewById(R.id.escuela);
@@ -90,6 +93,7 @@ public class Registro extends ActionBarActivity {
             }
         });
     }
+
     //todo esto servira para el registro de los usuarios que entraran a punto y comma, con esto se guardaran los datos de
     //los usuarios en la nuve
     private void enviarRegistro(String escuela, String carrera) {
@@ -119,9 +123,9 @@ public class Registro extends ActionBarActivity {
 
     private void adaptarSpinner1() {
         //agrgamos un adaptador para que por defecto tenga una opción seleccionada
-        HintAdapter adapter = new HintAdapter(this, escuelas, android.R.layout.simple_spinner_item);
+        HintAdapter adapter = new HintAdapter(this, escuelas, R.layout.spinner_item_top);
         final int count = adapter.getCount() - 1;
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.spinner_item_top);
         escuela.setAdapter(adapter);
         escuela.setSelection(adapter.getCount());
         escuela.setOnItemSelectedListener(
@@ -144,8 +148,8 @@ public class Registro extends ActionBarActivity {
 
     private void adaptarSpinner2() {
 
-        HintAdapter adapter = new HintAdapter(this, carreras, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        HintAdapter adapter = new HintAdapter(this, carreras, R.layout.spinner_item_top);
+        adapter.setDropDownViewResource(R.layout.spinner_item_top);
         final int count = adapter.getCount() - 1;
         carrera.setAdapter(adapter);
         carrera.setSelection(adapter.getCount());
@@ -170,7 +174,7 @@ public class Registro extends ActionBarActivity {
     class HintAdapter extends ArrayAdapter<String> {
 
         public HintAdapter(Context theContext, String[] objects, int theLayoutResId) {
-            super(theContext, theLayoutResId, android.R.id.text1, objects);
+            super(theContext, theLayoutResId, objects);
         }
 
         @Override

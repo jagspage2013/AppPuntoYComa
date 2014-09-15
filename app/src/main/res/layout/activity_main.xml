@@ -12,25 +12,43 @@
 
 
 
-    <com.facebook.widget.LoginButton
+   <com.facebook.widget.LoginButton
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         facebook:confirm_logout="false"
         facebook:fetch_user_info="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_above="@+id/lbl_ponente"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp" />
 
-    <!--<com.google.android.gms.common.SignInButton-->
-    <Button
+    <com.google.android.gms.common.SignInButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/sing_in_button"
-        android:layout_above="@+id/login_button"
         android:layout_alignStart="@+id/login_button"
-        android:layout_alignLeft="@+id/login_button"
-        android:layout_alignRight="@id/login_button"
         android:layout_alignEnd="@+id/login_button"
+        android:layout_above="@+id/login_button"
         android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/pycsplash"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Punto y Coma 2014"
+        android:id="@+id/lbl_ponente"
+        android:textColor="#ffffff"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp" />
 
 </RelativeLayout>

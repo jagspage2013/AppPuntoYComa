@@ -5,7 +5,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin">
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:background="#0b6b62">
 
     <Spinner
         android:id="@+id/carrera"
@@ -13,17 +14,19 @@
         android:prompt="@string/spinner_carrera"
         android:spinnerMode="dropdown"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/escuela"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Spinner
         android:id="@+id/escuela"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/carrera"
         android:drawSelectorOnTop="true"
         android:spinnerMode="dropdown"
         android:prompt="@string/spinner_escuela"
-        android:layout_marginTop="15dp"
+        android:layout_below="@+id/imageView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -34,6 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Agrega tu Escuela"
+        android:textColorHint="#eee"
         android:ems="10"
         android:layout_above="@+id/otracarrera"
         android:layout_alignParentLeft="true"
@@ -44,6 +48,7 @@
 
     <EditText
         android:id="@+id/otracarrera"
+        android:textColorHint="#eee"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Agrega tu Carrera"
@@ -60,8 +65,21 @@
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Registrar"
+        android:text="Continuar"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp" />
-    </RelativeLayout>
+        android:layout_marginBottom="50dp"
+        android:textColor="#fff"
+        android:background="@drawable/selector_btnes"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/pycsplash"
+        android:layout_margin="15dp" />
+</RelativeLayout>

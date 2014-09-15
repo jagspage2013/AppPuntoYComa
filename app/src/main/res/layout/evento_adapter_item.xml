@@ -8,28 +8,152 @@
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:padding="16dp"
+        android:padding="16dp">
 
-        >
-        <FrameLayout
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent" android:layout_height="match_parent">
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            android:id="@+id/imageView"
+            android:src="@drawable/cisco" />
+
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_below="@+id/imageView"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
-            android:paddingBottom="@dimen/activity_vertical_margin">
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:background="#e5e5e5"
+            android:id="@+id/subchild">
+
 
             <TextView
                 android:id="@+id/my_text_view"
+                android:text="Back End Development: Solving Existing Challenging Problems that Really Drive Technology Forward"
+                android:textColor="#a5aaa9"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </FrameLayout>
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/lbl_hora"
+                android:layout_toStartOf="@+id/lbl_hora"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Medium Text"
+                android:textColor="#a5aaa9"
+                android:textStyle="bold"
+                android:id="@+id/lbl_hora"
+                android:layout_below="@+id/textView"
+                android:layout_alignRight="@+id/layout_ponente"
+                android:layout_alignEnd="@+id/layout_ponente" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/my_text_view"
+                android:id="@+id/layout_ponente"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_marginTop="10dp"
+                    android:text="Ponente"
+                    android:textColor="#a5aaa9"
+                    android:textStyle="bold"
+                    android:id="@+id/lbl_ponente"/>
+
+                <TextView
+                    android:id="@+id/lbl_nombre_pon"
+                    android:text="Nombre Ponente"
+                    android:textColor="#a5aaa9"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_ponente"
+                android:id="@+id/layout_empresa">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Empresa / Organización"
+                    android:textColor="#a5aaa9"
+                    android:textStyle="bold"
+                    android:id="@+id/lbl_empresa"
+                    android:layout_marginTop="10dp" />
+
+                <TextView
+                    android:id="@+id/lbl_nombre_empresa"
+                    android:text="Nombre Org"
+                    android:textColor="#a5aaa9"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Agendar"
+                android:id="@+id/btn_agendar"
+                android:background="@drawable/selector_btnes"
+                android:layout_below="@+id/layout_empresa"
+                android:layout_alignRight="@+id/layout_empresa"
+                android:layout_alignEnd="@+id/layout_empresa"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="30dp"
+                android:textColor="#fff" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Hora:"
+                android:textColor="#a5aaa9"
+                android:textStyle="bold"
+                android:id="@+id/textView"
+                android:layout_toEndOf="@+id/my_text_view"
+                android:layout_toRightOf="@+id/my_text_view"
+                android:layout_alignParentTop="true"
+                android:layout_alignLeft="@+id/lbl_hora"
+                android:layout_alignStart="@+id/lbl_hora"
+                android:layout_alignRight="@+id/lbl_hora"
+                android:layout_alignEnd="@+id/lbl_hora" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 </RelativeLayout>

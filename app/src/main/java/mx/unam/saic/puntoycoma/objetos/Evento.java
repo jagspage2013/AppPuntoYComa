@@ -8,28 +8,39 @@ public class Evento {
     private int id;
     private String nombre;
 
-    public Evento(int id, String nombre, String hora_inicio, String hora_final, int id_ponente, int id_lugar, int importante) {
+    public Evento(int id, String nombre, String hora_inicio, String hora_final, int id_ponente, int id_lugar, int drawable,String fecha) {
         this.id = id;
         this.nombre = nombre;
         this.hora_inicio = hora_inicio;
         this.hora_final = hora_final;
         this.id_ponente = id_ponente;
         this.id_lugar = id_lugar;
-        this.importante = importante;
+        this.drawable = drawable;
+        this.fecha = fecha;
     }
 
     private String hora_inicio;
     private String hora_final;
-    private int id_ponente;
-    private int id_lugar;
-    private int importante;
 
-    public int getImportante() {
-        return importante;
+    public String getFecha() {
+        return fecha;
     }
 
-    public void setImportante(int importante) {
-        this.importante = importante;
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    private String fecha;
+    private int id_ponente;
+    private int id_lugar;
+    private int drawable;
+
+    public int getDrawable() {
+        return drawable;
+    }
+
+    public void setDrawable(int importante) {
+        this.drawable = importante;
     }
 
 
@@ -81,5 +92,8 @@ public class Evento {
         this.id_lugar = id_lugar;
     }
 
-
+    @Override
+    public String toString() {
+        return this.getNombre();
+    }
 }

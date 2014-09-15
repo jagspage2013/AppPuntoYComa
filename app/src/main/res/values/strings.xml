@@ -11,22 +11,22 @@
     <string name="status_update">Actualizando estado %1$s en %2$s</string>
     <string name="app_id">1473019672945911</string>
     <string name="get_started">Para iniciar, log en Facebook</string>
-    <string name="spinner_carrera">Elige tu Carrera...</string>
-    <string name="spinner_escuela">Elige tu Escuela...</string>
+    <string name="spinner_carrera">Elige tu Carrera…</string>
+    <string name="spinner_escuela">Elige tu Escuela…</string>
 
     <string-array name="opc_carrera">
+        <item>Ingeniería en computación</item>
+        <item>Ciencias de la computación</item>
+        <item>Informática</item>
+        <item>otra</item>
+        <item>Selecciona tu Carrera</item>
+    </string-array>
+    <string-array name="opc_escuela">
         <item>UNAM</item>
         <item>IPN</item>
         <item>UAM</item>
         <item>UNEM</item>
         <item>UAEM</item>
-        <item>otra</item>
-        <item>Selecciona tu Carrera</item>
-    </string-array>
-    <string-array name="opc_escuela">
-        <item>Ingeniería en computación</item>
-        <item>Ciencias de la computación</item>
-        <item>Informática</item>
         <item>otra</item>
         <item>Selecciona tu Escuela</item>
     </string-array>
@@ -34,10 +34,11 @@
     <string name="title_activity_activity_punto_ycoma">Punto y Coma 2014</string>
     <string name="title_section1">Agenda</string>
     <string name="title_section2">Lugares</string>
-    <string name="title_section3">Ponentes</string>
-    <string name="title_section4">Algo</string>
+    <string name="title_section3">Registro</string>
+    <string name="title_section4">Acerca de</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
+    <string name="maps_key" >AIzaSyCU4PxOU89TyQOCCZjpG9s6uOVvYviAEuc</string>
 
 </resources>

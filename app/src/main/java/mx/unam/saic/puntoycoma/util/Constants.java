@@ -6,8 +6,11 @@ import android.content.SharedPreferences;
 public class Constants {
 
     public static final String TAG = "puntoycoma";
-    public static int CURRENT_FRAG ;
+    public static int CURRENT_FRAG  ;
     public static final String  ARG_SECTION_NUMBER = "section_number";
+    public static final String  ARG_DAY = "day_number";
+    public static final String[] CEDES = {"Facultad de Ciencias","Facultad de Ingeniería","Posgrado de Ingeniería"};
+
 
 
     public static void setName(Context context,String name){

@@ -2,11 +2,13 @@ package mx.unam.saic.puntoycoma.controladores;
 
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.facebook.Request;
@@ -48,6 +50,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         if (!Constants.getName(this).equals("")) {
             goToNextActivity();
@@ -65,7 +69,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
 
         if (!(ConnectionDetector.isConnectedToInternet(this))) {
-            Log.d(Constants.TAG, "No está Conectado a internet... haz algo duh");
+            Log.d(Constants.TAG, "No está Conectado a internet...");
         }
 
         //int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
@@ -75,6 +79,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     this, requestCode);
             dialog.show();
         }*/
+
+
+
     }
 
     @Override
@@ -173,7 +180,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     if (user != null) {
                         Log.d(Constants.TAG, "EL USUARIO ES : " + user.getFirstName() + user.getMiddleName() + user.getLastName());
                         Constants.setName(getApplicationContext(), user.getFirstName() + " " + user.getMiddleName() + " " + user.getLastName());
-                        goToNextActivity();
+                        goToFormularioActivity();
 
                     }
                     if (response.getError() != null) {
@@ -189,10 +196,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     public void onConnected(Bundle bundle) {
         mSignInClicked = false;
-        Toast.makeText(this, "Bienvenido a Punto y Coma", Toast.LENGTH_SHORT).show();
-        if (!Constants.getName(this).equals("")) {
-            goToNextActivity();
-        } else {
+        if (Constants.getName(this).equals("")) {
             getProfileInformation();
         }
     }

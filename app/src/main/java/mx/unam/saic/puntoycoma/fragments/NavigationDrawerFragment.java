@@ -78,12 +78,12 @@ public class NavigationDrawerFragment extends Fragment {
         });
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_1,
-                android.R.id.text1,
+                R.layout.simple_list_item_frag,
                 new String[]{
                         getString(R.string.title_section1),
                         getString(R.string.title_section2),
                         getString(R.string.title_section3),
+                        getString(R.string.title_section4)
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
@@ -157,6 +157,7 @@ public class NavigationDrawerFragment extends Fragment {
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
+
 
     private void selectItem(int position) {
         mCurrentSelectedPosition = position;
